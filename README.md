@@ -31,4 +31,4 @@
 
 
 ## 同时该项目可以用于对于unity教程的练习，比如在学习前进行备份，学完一课并跟着做之后，用软件的还原功能，进行对项目的回溯，以便反复练习操作，其实这也是这个软件开发出来的原意（）
-使用的话，要先安装以下几个库，os、zipfile、datetime，PySimpleGUI，我用pycharm环境开发的这个软件
+使用的话，要先安装以下几个库，os、zipfile、datetime，PySimpleGUI，我用pycharm环境开发的这个软件，当然也可以直接下载release里的
