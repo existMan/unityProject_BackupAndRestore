@@ -43,10 +43,9 @@ def ask_backup_confirmation():
             return True
 
 def restore_project(backup_zip_path, target_folder):
-
     # 提示用户是否在恢复前进行备份
     backup_confirmation = ask_backup_confirmation()
-    if backup_confirmation == True:
+    if backup_confirmation:
         backup_project(target_folder, os.path.dirname(target_folder))
 
     # 确保备份文件存在
@@ -54,10 +53,32 @@ def restore_project(backup_zip_path, target_folder):
         sg.popup_error('错误', '指定的备份文件不存在。')
         return
 
+    # 删除现有的项目文件夹内容
+    try:
+        # 检查目标文件夹是否存在
+        if os.path.exists(target_folder):
+            # 获取用户确认
+            if sg.popup_yes_no('这将删除现有的项目文件夹中的所有文件，并且此操作不可逆。是否继续？') == 'Yes':
+                # 删除目标文件夹中的内容
+                shutil.rmtree(target_folder)
+                # 重新创建空的项目文件夹
+                os.makedirs(target_folder)
+            else:
+                return
+        else:
+            # 如果目标文件夹不存在，直接创建它
+            os.makedirs(target_folder)
+    except Exception as e:
+        sg.popup_error('错误', '删除现有项目文件夹时出错：', str(e))
+        return
+
     # 解压备份文件到目标文件夹
-    with zipfile.ZipFile(backup_zip_path, 'r') as backup_zip:
-        backup_zip.extractall(target_folder)
-    sg.popup('恢复完成！', '您的项目已从以下位置恢复：', backup_zip_path)
+    try:
+        with zipfile.ZipFile(backup_zip_path, 'r') as backup_zip:
+            backup_zip.extractall(target_folder)
+        sg.popup('恢复完成！', '您的项目已从以下位置恢复：', backup_zip_path)
+    except Exception as e:
+        sg.popup_error('错误', '解压备份文件时出错：', str(e))
 
 # GUI布局
 layout = [
